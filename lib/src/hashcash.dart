@@ -46,9 +46,8 @@ class HashCash {
     if (diff > 0) {
       String zeros = "0" * diff;
       return "$zeros$s_number";
-    } else {
-      return s_number;
     }
+    return s_number;
   }
 
   static String _mint(String challenge, int bits) {
@@ -121,9 +120,8 @@ class HashCash {
       } else {
         print("Malformed version 1 hashcash stamp!\n");
       }
-    } else {
-      print("Unknown hashcash version\n");
     }
+    print("Unknown hashcash version\n");
     return false;
   }
 }
