@@ -4,7 +4,7 @@
 import "package:hashcash/hashcash.dart";
 
 main() {
-  //  dart 1000 occurence temps moyen
+  //  1000 occurence time average 1.289sec 22/011/2015 10Pm
 
   Stopwatch sw = new Stopwatch();
   int l = 1000;
