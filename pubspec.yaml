@@ -1,0 +1,13 @@
+name: HashCash
+version: 0.0.1
+author: Kevin Segaud<segaud.kevin@gmail.com>
+description: |-
+  Dart implementation of HashCash.
+
+  see http://www.hashcash.org/ for more information.
+environment:
+  sdk: '>=1.0.0 <2.0.0'
+dependencies:
+  crypto: any
+dev_dependencies:
+  unittest: any
