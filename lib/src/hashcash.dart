@@ -39,13 +39,12 @@ class HashCash {
     String ver = "1";
     String iso_now = now == null ?
         new DateTime.now().toIso8601String() : now.toIso8601String();
-    ts = "$ts${iso_now.substring(2, 4)}";
-    ts = "$ts${iso_now.substring(5, 7)}";
-    ts = "$ts${iso_now.substring(8, 10)}";
+    iso_now = iso_now.replaceAll("-", "");
+    iso_now = iso_now.replaceAll(":", "");
+    List<String> date_time = iso_now.split("T");
+    ts = date_time[0];
     if (stamp_seconds) {
-      ts = "$ts${iso_now.substring(11, 13)}";
-      ts = "$ts${iso_now.substring(14, 16)}";
-      ts = "$ts${iso_now.substring(17, 19)}";
+      ts = "$ts${date_time[1].substring(0, 6)}";
     }
     challenge = "$ver:$bits:$ts:$resource:$ext:${_salt(saltchars)}:";
     return "$challenge${_mint(challenge, bits)}";
