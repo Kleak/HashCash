@@ -45,6 +45,7 @@ class HashCash {
     if (stamp_seconds) {
       ts = "$ts${iso_now.substring(11, 13)}";
       ts = "$ts${iso_now.substring(14, 16)}";
+      ts = "$ts${iso_now.substring(17, 19)}";
     }
     challenge = "$ver:$bits:$ts:$resource:$ext:${_salt(saltchars)}:";
     return "$challenge${_mint(challenge, bits)}";
