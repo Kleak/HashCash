@@ -4,13 +4,13 @@
 import "package:hashcash/hashcash.dart";
 
 main() {
-  //  1000 occurence time average 1.289sec 22/011/2015 10Pm
 
   Stopwatch sw = new Stopwatch();
-  int l = 1000;
+  int l = 100;
   sw.start();
   for (int i = 0; i < l; i++) {
     String stamp = HashCash.mint("segaud.kevin@gmail.com", bits: 15);
+    print("$i $stamp");
   }
   sw.stop();
   print(sw.elapsed.inSeconds / l);
