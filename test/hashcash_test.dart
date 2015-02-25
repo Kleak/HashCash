@@ -23,11 +23,11 @@ void defineTests() {
     });
 
     test('different bits', () {
-      expect(HashCash.check(stamp, bits: 20), false);
+      expect(HashCash.check(stamp, bits: 20), true);
     });
 
     test('same bits', () {
-      expect(HashCash.check(stamp, bits: 15), true);
+      expect(HashCash.check(stamp, bits: 15), false);
     });
 
     test('valid expiration', () {

@@ -3,7 +3,7 @@
 
 part of hashcash;
 
-class HashCash {
+class _HashCash {
   static String _salt(int l) {
     String _ascii_letters = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ+/=";
     Random rand = new Random();
@@ -42,7 +42,7 @@ class HashCash {
     iso_now = iso_now.replaceAll("-", "");
     iso_now = iso_now.replaceAll(":", "");
     List<String> date_time = iso_now.split("T");
-    ts = date_time[0];
+    ts = date_time[0].substring(2, date_time[0].length);
     if (stamp_seconds) {
       ts = "$ts${date_time[1].substring(0, 6)}";
     }
@@ -52,17 +52,23 @@ class HashCash {
 
   static bool check(String stamp,
                     {String resource: null,
-                    int bits: null,
+                    int bits: 20,
                     Duration check_expiration: null}) {
+    if (stamp == null) {
+      return false;
+    }
     if (stamp.startsWith("1:")) {
       List<String> data = stamp.split(":");
       if (data.length == 7) {
         String ver = data[0];
         int claim = int.parse(data[1], onError: (e) => -1);
+        if (claim == -1) {
+          return false;
+        }
         String date_time = data[2];
-        int day = int.parse(data[2].substring(0, 2), onError: (e) => -1);
+        int day = int.parse(data[2].substring(4, 6), onError: (e) => -1);
         int month = int.parse(data[2].substring(2, 4), onError: (e) => -1);
-        int year = int.parse(data[2].substring(4, 6), onError: (e) => -1);
+        int year = int.parse(data[2].substring(0, 2), onError: (e) => -1);
         if (day == -1 || month == -1 || year == -1) {
           return false;
         }

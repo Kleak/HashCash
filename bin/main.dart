@@ -4,7 +4,6 @@
 import "package:hashcash/hashcash.dart";
 
 main() {
-
   Stopwatch sw = new Stopwatch();
   int l = 100;
   sw.start();
