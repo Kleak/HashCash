@@ -16,7 +16,7 @@ class HashCash {
   => _HashCash.mint(resource, bits: bits, now: now, ext: ext,
       saltchars: saltchars, stamp_seconds: stamp_seconds);
 
-  static bool check(String stamp, {String resource: null, int bits: null,
+  static bool check(String stamp, {String resource: null, int bits: 20,
     Duration check_expiration: null})
   => _HashCash.check(stamp, resource: resource, bits: bits,
       check_expiration: check_expiration);
