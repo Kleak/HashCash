@@ -4,6 +4,7 @@
 import "package:hashcash/hashcash.dart";
 
 main() {
-  String stamp = HashCash.mint("segaud.kevin@gmail.com", bits: 15);
+  String stamp = HashCash.mint("segaud.kevin@gmail.com");
   print(stamp);
+  print(HashCash.check(stamp, resource: "segaud.kevin@gmail.com"));
 }

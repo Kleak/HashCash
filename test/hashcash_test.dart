@@ -22,11 +22,11 @@ void defineTests() {
       expect(HashCash.check(stamp, resource: "segaud.kevin@gmail.com"), true);
     });
 
-    test('different bits', () {
+    test('same bits', () {
       expect(HashCash.check(stamp, bits: 20), true);
     });
 
-    test('same bits', () {
+    test('differents bits', () {
       expect(HashCash.check(stamp, bits: 15), false);
     });
 

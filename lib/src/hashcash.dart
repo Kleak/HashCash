@@ -24,7 +24,7 @@ class HashCash {
     while (true) {
       String hex_counter = counter.toRadixString(16);
       String digest =
-          sha256.convert("$challenge$hex_counter".codeUnits).toString();
+          sha1.convert("$challenge$hex_counter".codeUnits).toString();
       if (digest.startsWith(zeros)) {
         return hex_counter;
       }
@@ -40,7 +40,7 @@ class HashCash {
    *  FWIW, urllib.urlencode(dct).replace('&',';') comes close to the
    *  hashcash extension format.
    *  [saltchars] specifies the length of the salt used; this version defaults
-   *  16 chars, rather than the C version's 16 chars.  This still provides about
+   *  8 chars, rather than the C version's 16 chars.  This still provides about
    *  17 million salts per resource, per timestamp, before birthday paradox
    *  collisions occur.  Really paranoid users can use a larger salt though.
    *  [stamp_seconds] lets you add the option time elements to the datestamp.
@@ -51,7 +51,7 @@ class HashCash {
       {int bits: 20,
       DateTime now: null,
       String extension: '',
-      int saltchars: 16,
+      int saltchars: 8,
       bool stamp_seconds: true}) {
     String ts = "";
     String challenge;
@@ -124,7 +124,7 @@ class HashCash {
           }
         }
         int hex_digits = (claim / 4).floor();
-        String digest = sha256.convert(stamp.codeUnits).toString();
+        String digest = sha1.convert(stamp.codeUnits).toString();
         return digest.startsWith(("0" * hex_digits));
       } else {
         print("Malformed version 1 hashcash stamp!\n");
