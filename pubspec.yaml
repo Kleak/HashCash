@@ -1,6 +1,7 @@
 name: hashcash
 version: 0.0.1
 author: Kevin Segaud<segaud.kevin@gmail.com>
+homepage: https://github.com/Kleak/HashCash
 description: |-
   Dart implementation of HashCash.
 
@@ -8,7 +9,7 @@ description: |-
 environment:
   sdk: '>=1.0.0 <2.0.0'
 dependencies:
-  crypto: 1.1.1
+  crypto: ">=1.1.1 <2.0.0"
 dev_dependencies:
   test: any
   benchmark_harness: any

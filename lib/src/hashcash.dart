@@ -6,12 +6,12 @@ import "dart:math";
 import "package:crypto/crypto.dart";
 
 class HashCash {
-  static String _salt(int l) {
+  static String _salt(int length) {
     String _ascii_letters =
         "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ+/=";
     Random rand = new Random();
     String sb = "";
-    for (int i = 0; i < l; i++) {
+    for (int i = 0; i < length; i++) {
       sb = "$sb${_ascii_letters[rand.nextInt(_ascii_letters.length)]}";
     }
     return sb;
@@ -24,7 +24,7 @@ class HashCash {
     while (true) {
       String hex_counter = counter.toRadixString(16);
       String digest =
-          sha1.convert("$challenge$hex_counter".codeUnits).toString();
+          sha256.convert("$challenge$hex_counter".codeUnits).toString();
       if (digest.startsWith(zeros)) {
         return hex_counter;
       }
@@ -32,10 +32,25 @@ class HashCash {
     }
   }
 
+  /**
+   *  Mint a new hashcash stamp for [resource] with [bits] of collision
+   *  20 bits of collision is the default.
+   *  [extension] lets you add your own extensions to a minted stamp.
+   *  Specify an extension as a string of form 'name1=2,3;name2;name3=var1=2,2,val'
+   *  FWIW, urllib.urlencode(dct).replace('&',';') comes close to the
+   *  hashcash extension format.
+   *  [saltchars] specifies the length of the salt used; this version defaults
+   *  16 chars, rather than the C version's 16 chars.  This still provides about
+   *  17 million salts per resource, per timestamp, before birthday paradox
+   *  collisions occur.  Really paranoid users can use a larger salt though.
+   *  [stamp_seconds] lets you add the option time elements to the datestamp.
+   *  If you want more than just day, you get all the way down to seconds,
+   *  even though the spec also allows hours/minutes without seconds.
+   */
   static String mint(String resource,
       {int bits: 20,
       DateTime now: null,
-      String ext: '',
+      String extension: '',
       int saltchars: 16,
       bool stamp_seconds: true}) {
     String ts = "";
@@ -51,10 +66,19 @@ class HashCash {
     if (stamp_seconds) {
       ts = "$ts${date_time[1].substring(0, 6)}";
     }
-    challenge = "$ver:$bits:$ts:$resource:$ext:${_salt(saltchars)}:";
+    challenge = "$ver:$bits:$ts:$resource:$extension:${_salt(saltchars)}:";
     return "$challenge${_mint(challenge, bits)}";
   }
 
+  /**
+   *  Check whether a [stamp] is valid
+   *  Optionally, the [stamp] may be checked for a specific resource, and/or
+   *  it may require a minimum bit value, and/or it may be checked for
+   *  expiration, and/or it may be checked for double spending.
+   *  If [check_expiration] is specified, it should contain the number of
+   *  seconds old a date field may be.  Indicating days might be easier in
+   *  many cases, e.g.
+   */
   static bool check(String stamp,
       {String resource: null, int bits: 20, Duration check_expiration: null}) {
     if (stamp == null) {
@@ -100,7 +124,7 @@ class HashCash {
           }
         }
         int hex_digits = (claim / 4).floor();
-        String digest = sha1.convert(stamp.codeUnits).toString();
+        String digest = sha256.convert(stamp.codeUnits).toString();
         return digest.startsWith(("0" * hex_digits));
       } else {
         print("Malformed version 1 hashcash stamp!\n");
