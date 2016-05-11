@@ -1,11 +1,14 @@
 // Copyright (c) 2015, Kevin Segaud. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
-part of hashcash;
+import "dart:math";
 
-class _HashCash {
+import "package:crypto/crypto.dart";
+
+class HashCash {
   static String _salt(int l) {
-    String _ascii_letters = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ+/=";
+    String _ascii_letters =
+        "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ+/=";
     Random rand = new Random();
     String sb = "";
     for (int i = 0; i < l; i++) {
@@ -18,27 +21,29 @@ class _HashCash {
     int counter = 0;
     int hex_digits = (bits / 4.0).ceil();
     String zeros = "0" * hex_digits;
-    SHA1 sha1 = new SHA1();
     while (true) {
       String hex_counter = counter.toRadixString(16);
-      sha1.add("$challenge$hex_counter".codeUnits);
-      String digest = CryptoUtils.bytesToHex(sha1.close());
+      String digest =
+          sha1.convert("$challenge$hex_counter".codeUnits).toString();
       if (digest.startsWith(zeros)) {
         return hex_counter;
       }
       counter++;
-      sha1 = sha1.newInstance();
     }
   }
 
   static String mint(String resource,
-                     {int bits: 20, DateTime now: null, String ext: '',
-                     int saltchars: 16, bool stamp_seconds: true}) {
+      {int bits: 20,
+      DateTime now: null,
+      String ext: '',
+      int saltchars: 16,
+      bool stamp_seconds: true}) {
     String ts = "";
     String challenge;
     String ver = "1";
-    String iso_now = now == null ?
-        new DateTime.now().toIso8601String() : now.toIso8601String();
+    String iso_now = now == null
+        ? new DateTime.now().toIso8601String()
+        : now.toIso8601String();
     iso_now = iso_now.replaceAll("-", "");
     iso_now = iso_now.replaceAll(":", "");
     List<String> date_time = iso_now.split("T");
@@ -51,21 +56,17 @@ class _HashCash {
   }
 
   static bool check(String stamp,
-                    {String resource: null,
-                    int bits: 20,
-                    Duration check_expiration: null}) {
+      {String resource: null, int bits: 20, Duration check_expiration: null}) {
     if (stamp == null) {
       return false;
     }
     if (stamp.startsWith("1:")) {
       List<String> data = stamp.split(":");
       if (data.length == 7) {
-        String ver = data[0];
         int claim = int.parse(data[1], onError: (e) => -1);
         if (claim == -1) {
           return false;
         }
-        String date_time = data[2];
         int day = int.parse(data[2].substring(4, 6), onError: (e) => -1);
         int month = int.parse(data[2].substring(2, 4), onError: (e) => -1);
         int year = int.parse(data[2].substring(0, 2), onError: (e) => -1);
@@ -87,7 +88,6 @@ class _HashCash {
         } else {
           dt = new DateTime(year + 2000, month, day);
         }
-        String res = data[3];
         if (resource != null && resource != data[3]) {
           return false;
         } else if (bits != null && bits != claim) {
@@ -100,9 +100,7 @@ class _HashCash {
           }
         }
         int hex_digits = (claim / 4).floor();
-        SHA1 sha1 = new SHA1();
-        sha1.add(stamp.codeUnits);
-        String digest = CryptoUtils.bytesToHex(sha1.close());
+        String digest = sha1.convert(stamp.codeUnits).toString();
         return digest.startsWith(("0" * hex_digits));
       } else {
         print("Malformed version 1 hashcash stamp!\n");

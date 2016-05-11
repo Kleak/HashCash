@@ -2,3 +2,5 @@ packages
 .idea
 .DS_Store
 pubspec.lock
+.packages
+.pub

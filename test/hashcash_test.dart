@@ -6,7 +6,7 @@ library hashcash_test;
 import "dart:io";
 
 import 'package:hashcash/hashcash.dart';
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 
 void main() => defineTests();
 
@@ -31,18 +31,20 @@ void defineTests() {
     });
 
     test('valid expiration', () {
-      expect(HashCash.check(stamp, check_expiration: new Duration(hours: 1)), true);
+      expect(HashCash.check(stamp, check_expiration: new Duration(hours: 1)),
+          true);
     });
 
     sleep(new Duration(seconds: 10));
 
     test('bad expiration', () {
-      expect(HashCash.check(stamp, check_expiration: new Duration(seconds: 1)), false);
+      expect(HashCash.check(stamp, check_expiration: new Duration(seconds: 1)),
+          false);
     });
 
     test('another valid expiration', () {
-      expect(HashCash.check(stamp, check_expiration: new Duration(minutes: 1)), true);
+      expect(HashCash.check(stamp, check_expiration: new Duration(minutes: 1)),
+          true);
     });
-
   });
 }
